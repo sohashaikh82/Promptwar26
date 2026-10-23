@@ -365,7 +365,7 @@ export default function App() {
               <h2 id="settings-heading">Settings</h2>
               <p>This prototype stores complaint data in the current page session. No account or external service is configured here.</p>
               <div className="settings-row"><span>Environment</span><b>Local demo</b></div>
-              <div className="settings-row"><span>Issue analysis</span><b>Backend endpoint with local fallback</b></div>
+              <div className="settings-row"><span>Issue analysis</span><b>Gemini backend endpoint</b></div>
               <div className="settings-row"><span>Photo storage</span><b>Not connected</b></div>
             </div>
           </section>

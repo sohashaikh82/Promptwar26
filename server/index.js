@@ -1,8 +1,11 @@
 import "dotenv/config";
 import express from "express";
+import { resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 
 const app = express();
 const port = Number(process.env.PORT) || 3001;
+const distPath = resolve(fileURLToPath(new URL(".", import.meta.url)), "../dist");
 const model = "gemini-2.5-flash";
 const categories = [
   "Waste Management",
@@ -15,6 +18,10 @@ const categories = [
 const severities = ["Low", "Moderate", "High", "Critical"];
 
 app.use(express.json({ limit: "10kb" }));
+
+app.get("/api/health", (_req, res) => {
+  res.json({ status: "ok" });
+});
 
 app.post("/api/analyze-complaint", async (req, res) => {
   const description = req.body?.description;
@@ -136,6 +143,14 @@ app.post("/api/analyze-complaint", async (req, res) => {
   }
 });
 
+app.use(express.static(distPath));
+app.use((req, res, next) => {
+  if (req.method !== "GET" || req.path.startsWith("/api/")) {
+    return next();
+  }
+  return res.sendFile(resolve(distPath, "index.html"));
+});
+
 app.use((error, req, res, _next) => {
   if (error instanceof SyntaxError && "body" in error) {
     return res.status(400).json({ error: "Request body must be valid JSON." });
@@ -147,8 +162,8 @@ app.use((error, req, res, _next) => {
   return res.status(500).json({ error: "Unexpected backend error." });
 });
 
-app.listen(port, "127.0.0.1", () => {
-  console.log(`CivicSense API listening at http://127.0.0.1:${port}`);
+app.listen(port, "0.0.0.0", () => {
+  console.log(`CivicSense web service listening on port ${port}`);
   if (!process.env.GEMINI_API_KEY?.trim()) {
     console.error("GEMINI_API_KEY is missing. Add it to .env to enable Gemini analysis.");
   }
