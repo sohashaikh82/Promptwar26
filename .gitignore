@@ -1,7 +1,15 @@
 
 node_modules/
 dist/
+dist-ssr/
 .env
 .env.*
 !.env.example
 server/.env
+*.log
+*.pem
+*.p12
+*.key
+credentials.json
+secrets.*
+.npmrc
