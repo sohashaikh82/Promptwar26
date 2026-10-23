@@ -59,7 +59,7 @@ export default function App() {
       const response = await fetch("/api/analyze-complaint", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ description: description.trim() }),
+        body: JSON.stringify({ description: description.trim(), location: location.trim() }),
       });
       const data = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(data.error || `Analysis failed (HTTP ${response.status}).`);
@@ -72,7 +72,11 @@ export default function App() {
         data.priorityScore > 100 ||
         typeof data.responsibleDepartment !== "string" ||
         typeof data.explanation !== "string" ||
-        typeof data.recommendedAction !== "string"
+        typeof data.recommendedAction !== "string" ||
+        !Array.isArray(data.missingInformation) ||
+        !data.missingInformation.every(item => typeof item === "string") ||
+        !Array.isArray(data.safetyWarnings) ||
+        !data.safetyWarnings.every(item => typeof item === "string")
       ) {
         throw new Error("The analysis service returned an invalid result. Please try again.");
       }
@@ -209,6 +213,8 @@ export default function App() {
             <p><b>Responsible department:</b> {analysis.responsibleDepartment}</p>
             <p><b>Explanation:</b> {analysis.explanation}</p>
             <p><b>Recommended action:</b> {analysis.recommendedAction}</p>
+            {analysis.missingInformation.length > 0 && <p><b>Helpful details to add:</b> {analysis.missingInformation.join(" · ")}</p>}
+            {analysis.safetyWarnings.length > 0 && <p className="analysis-warning"><b>Safety notes:</b> {analysis.safetyWarnings.join(" · ")}</p>}
             <p className="analysis-disclaimer">AI-generated recommendation. Human review is required.</p>
           </div>
         )}

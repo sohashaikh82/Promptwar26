@@ -727,6 +727,13 @@ a {
   color: var(--muted) !important;
 }
 
+.analysis-warning {
+  padding: 9px 10px;
+  border-radius: 8px;
+  color: #8a3b16 !important;
+  background: #fff3e8;
+}
+
 .search-input {
   margin-bottom: 11px;
 }
