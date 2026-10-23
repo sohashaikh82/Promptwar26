@@ -1,7 +1,11 @@
 
 node_modules/
+server/node_modules/
 dist/
+server/dist/
 dist-ssr/
+.vite/
+.vite-temp/
 .env
 .env.*
 !.env.example
